@@ -1,0 +1,47 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - button "←" [ref=e5] [cursor=pointer]
+    - generic [ref=e6]:
+      - generic [ref=e7]: 第二幕 · 暗流涌动
+      - generic [ref=e8]: 剩余 18:42
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic [ref=e11]: 苏
+      - generic [ref=e12]:
+        - generic [ref=e13]: 苏晚晴
+        - generic [ref=e14]: 那晚我确实在画廊，不过很早就离开了。
+        - generic [ref=e15]: 9:42
+    - generic [ref=e16]:
+      - generic [ref=e17]: 周
+      - generic [ref=e18]:
+        - generic [ref=e19]: 周明远
+        - generic [ref=e20]: 我是苏小姐的合伙人。陈先生是我老朋友，认识快十年。
+        - generic [ref=e21]: 9:44
+    - generic [ref=e22]:
+      - generic [ref=e23]: 陈
+      - generic [ref=e24]:
+        - generic [ref=e25]: 陈警官
+        - generic [ref=e26]: 各位，请配合调查。我需要知道晚宴后每人的行踪。
+        - generic [ref=e27]: 9:46
+    - generic [ref=e28]:
+      - generic [ref=e29]: 苏
+      - generic [ref=e30]:
+        - generic [ref=e31]: 苏晚晴
+        - generic [ref=e32]: 我昨晚约了陈先生谈画展...没想到那竟是最后一面。
+        - generic [ref=e33]: 9:48
+  - generic [ref=e34]:
+    - textbox "输入消息..." [ref=e35]
+    - button "↑" [ref=e36] [cursor=pointer]
+  - generic [ref=e37]:
+    - button "💬 聊天" [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: 💬
+      - text: 聊天
+    - button "🔍 搜证" [ref=e40] [cursor=pointer]:
+      - generic [ref=e41]: 🔍
+      - text: 搜证
+    - button "👤 我的" [ref=e42] [cursor=pointer]:
+      - generic [ref=e43]: 👤
+      - text: 我的
+    - button "🛒 商城" [ref=e44] [cursor=pointer]:
+      - generic [ref=e45]: 🛒
+      - text: 商城

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>剧本选择页面 - 完美复刻版</title>
+<style>
+:root {
+  --bg1:#0A0E17; --bg2:#111827; --bg3:#1A1F2E; --bg4:#252D3D;
+  --bd:#2A3040; --gold:#C9A96E; --goldLight:#DFC78A;
+  --t1:#E8ECF1; --t2:#8B95A5; --t3:#5A6475;
+  --blue:#4A7DFF; --purple:#9B7ED8; --green:#4CAF93; --orange:#E8954C;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg1);color:var(--t1);display:flex;justify-content:center;min-height:100vh;padding:20px}
+
+.phone{width:430px;min-height:932px;background:var(--bg1);border-radius:16px;overflow:hidden;position:relative;box-shadow:0 0 60px rgba(0,0,0,0.6)}
+
+/* Status Bar */
+.status-bar{height:44px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--bg1)}
+.status-left{font-size:14px;font-weight:600;color:var(--t1)}
+.status-right{display:flex;align-items:center;gap:6px}
+.signal-bars{display:flex;align-items:flex-end;gap:1px;height:12px}
+.signal-bar{width:3px;background:var(--t2);border-radius:1px}
+.signal-bar:nth-child(1){height:4px}
+.signal-bar:nth-child(2){height:6px}
+.signal-bar:nth-child(3){height:8px}
+.signal-bar:nth-child(4){height:10px}
+.battery{width:24px;height:10px;border:1.5px solid var(--t2);border-radius:2px;position:relative}
+.battery::after{content:'';position:absolute;right:-4px;top:2px;width:2px;height:4px;background:var(--t2);border-radius:1px}
+.battery-level{width:16px;height:100%;background:var(--t2);border-radius:1px}
+
+/* Search Area */
+.search-area{padding:12px 16px;background:var(--bg1)}
+.search-container{position:relative;width:100%;height:40px}
+.search-box{width:100%;height:40px;background:var(--bg2);border-radius:20px;display:flex;align-items:center;padding:0 16px;position:relative}
+.search-icon{width:18px;height:18px;position:absolute;left:16px;top:50%;transform:translateY(-50%)}
+.search-icon::before{content:'';width:10px;height:10px;border:2px solid var(--t3);border-radius:50%;position:absolute;left:0;top:0}
+.search-icon::after{content:'';width:2px;height:5px;background:var(--t3);position:absolute;right:-3px;top:7px;transform:rotate(-45deg)}
+.search-input{width:100%;height:100%;background:transparent;border:none;color:var(--t1);font-size:15px;padding-left:48px;padding-right:16px;outline:none}
+.search-input::placeholder{color:var(--t3)}
+
+/* Main Content */
+.main-content{padding:0 16px 100px;background:var(--bg1)}
+
+/* Popular Banner */
+.popular-banner{height:48px;background:var(--bg3);border-radius:12px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin-bottom:16px}
+.popular-left{display:flex;align-items:center;gap:10px}
+.popular-tag{background:var(--orange);color:white;font-size:10px;font-weight:700;padding:4px 8px;border-radius:6px}
+.popular-text{font-size:14px;font-weight:600;color:var(--t1)}
+.popular-arrow{font-size:12px;color:var(--t3)}
+
+/* Scroll Cards */
+.scroll-cards{display:flex;gap:10px;margin-bottom:20px;overflow-x:auto}
+.scroll-cards::-webkit-scrollbar{display:none}
+.scroll-card{width:140px;height:80px;background:var(--bg2);border-radius:12px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.scroll-card-label{font-size:13px;font-weight:600;color:var(--t1)}
+.scroll-card-count{font-size:11px;color:var(--t3)}
+
+/* Section Header */
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.section-title{font-size:16px;font-weight:700;color:var(--t1)}
+.section-more{font-size:12px;color:var(--t3)}
+
+/* Script Cards */
+.script-card{background:var(--bg3);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;gap:14px}
+.script-card:last-child{margin-bottom:0}
+
+.script-cover{width:64px;height:64px;background:var(--bg2);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.script-emoji{font-size:28px}
+
+.script-info{flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.script-name{font-size:15px;font-weight:600;color:var(--t1)}
+
+.script-tags{display:flex;gap:6px;flex-wrap:wrap}
+.script-tag{padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600}
+.script-tag.blue{background:rgba(74,125,255,0.25);color:var(--blue)}
+.script-tag.purple{background:rgba(155,126,216,0.25);color:var(--purple)}
+.script-tag.green{background:rgba(76,175,147,0.25);color:var(--green)}
+.script-tag.orange{background:rgba(232,149,76,0.25);color:var(--orange)}
+
+.script-meta{display:flex;align-items:center;gap:10px}
+.script-rating{color:var(--gold);font-size:13px;font-weight:600}
+.script-players{color:var(--t3);font-size:11px}
+
+/* Tab Bar */
+.tab-bar{height:56px;background:rgba(17,24,39,0.98);border-top:1px solid var(--bd);display:flex;justify-content:space-around;align-items:center;position:absolute;bottom:0;left:0;right:0;padding:0 16px}
+
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;padding:6px 10px}
+.tab-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.tab-icon svg{width:20px;height:20px;stroke:var(--t2);stroke-width:1.5;fill:none}
+.tab-label{font-size:10px;color:var(--t2)}
+
+.tab-item.active .tab-icon svg{stroke:var(--gold)}
+.tab-item.active .tab-label{color:var(--gold);font-weight:600}
+
+/* Active indicator line */
+.tab-item.active::before{content:'';position:absolute;top:0;width:24px;height:2px;background:var(--gold);border-radius:1px}
+
+/* Quick Button */
+.quick-btn{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:10}
+.quick-btn-inner{width:44px;height:44px;background:linear-gradient(135deg,#F5A623,#E8943C);border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(245,166,35,0.5)}
+.quick-btn-inner svg{width:20px;height:20px;fill:white}
+
+/* Hide regular middle tab */
+.tab-item:nth-child(3){visibility:hidden}
+
+/* User avatar in My tab */
+.user-avatar{width:20px;height:20px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:700}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-left">9:41</span>
+    <div class="status-right">
+      <div class="signal-bars">
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+      </div>
+      <div class="battery">
+        <div class="battery-level"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Area -->
+  <div class="search-area">
+    <div class="search-container">
+      <div class="search-box">
+        <div class="search-icon"></div>
+        <input type="text" class="search-input" placeholder="搜索剧本...">
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Popular Banner -->
+    <div class="popular-banner">
+      <div class="popular-left">
+        <span class="popular-tag">Popular</span>
+        <span class="popular-text">热门剧本</span>
+      </div>
+      <span class="popular-arrow">></span>
+    </div>
+
+    <!-- Scroll Cards -->
+    <div class="scroll-cards">
+      <div class="scroll-card">
+        <span class="scroll-card-label">Trending</span>
+        <span class="scroll-card-count">42 个剧本</span>
+      </div>
+      <div class="scroll-card">
+        <span class="scroll-card-label">New</span>
+        <span class="scroll-card-count">18 个剧本</span>
+      </div>
+      <div class="scroll-card">
+        <span class="scroll-card-label">For You</span>
+        <span class="scroll-card-count">25 个剧本</span>
+      </div>
+    </div>
+
+    <!-- Script List -->
+    <div class="section-header">
+      <span class="section-title">推荐剧本</span>
+      <span class="section-more">更多 ></span>
+    </div>
+
+    <!-- Script Card 1 -->
+    <div class="script-card">
+      <div class="script-cover">
+        <span class="script-emoji">🎭</span>
+      </div>
+      <div class="script-info">
+        <div class="script-name">山庄晚宴</div>
+        <div class="script-tags">
+          <span class="script-tag blue">本格</span>
+          <span class="script-tag purple">推理</span>
+        </div>
+        <div class="script-meta">
+          <span class="script-rating">⭐ 9.2</span>
+          <span class="script-players">1285 人玩过</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script Card 2 -->
+    <div class="script-card">
+      <div class="script-cover">
+        <span class="script-emoji">🎭</span>
+      </div>
+      <div class="script-info">
+        <div class="script-name">午夜列车</div>
+        <div class="script-tags">
+          <span class="script-tag purple">社交</span>
+          <span class="script-tag green">悬疑</span>
+        </div>
+        <div class="script-meta">
+          <span class="script-rating">⭐ 8.8</span>
+          <span class="script-players">892 人玩过</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script Card 3 -->
+    <div class="script-card">
+      <div class="script-cover">
+        <span class="script-emoji">🎭</span>
+      </div>
+      <div class="script-info">
+        <div class="script-name">古宅迷踪</div>
+        <div class="script-tags">
+          <span class="script-tag green">情感</span>
+          <span class="script-tag orange">惊悚</span>
+        </div>
+        <div class="script-meta">
+          <span class="script-rating">⭐ 9.0</span>
+          <span class="script-players">654 人玩过</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script Card 4 -->
+    <div class="script-card">
+      <div class="script-cover">
+        <span class="script-emoji">🎭</span>
+      </div>
+      <div class="script-info">
+        <div class="script-name">雨夜追凶</div>
+        <div class="script-tags">
+          <span class="script-tag blue">本格</span>
+        </div>
+        <div class="script-meta">
+          <span class="script-rating">⭐ 8.5</span>
+          <span class="script-players">421 人玩过</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Button (floating) -->
+  <div class="quick-btn">
+    <div class="quick-btn-inner">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <!-- 剧本 -->
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <span class="tab-label">剧本</span>
+    </div>
+
+    <!-- 广场 -->
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <span class="tab-label">广场</span>
+    </div>
+
+    <!-- 中间位置（留给快速按钮） -->
+    <div class="tab-item" style="visibility:hidden">
+      <div class="tab-icon"></div>
+      <span class="tab-label">占位</span>
+    </div>
+
+    <!-- 首页（激活） -->
+    <div class="tab-item active">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span class="tab-label">首页</span>
+    </div>
+
+    <!-- 我的 -->
+    <div class="tab-item">
+      <div class="tab-icon">
+        <div class="user-avatar">我</div>
+      </div>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

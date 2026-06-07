@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cc-figma-bridge": {
+      "command": "node",
+      "args": ["D:/workspace/AIjubensha/figma-mcp/dist/server/index.js"]
+    }
+  }
+}

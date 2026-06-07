@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma-developer-mcp__get_figma_data",
+      "mcp__cc-figma-bridge__connection_status",
+      "mcp__cc-figma-bridge__execute_code",
+      "mcp__cc-figma-bridge__export_image",
+      "mcp__cc-figma-bridge__get_selection",
+      "mcp__cc-figma-bridge__get_scene",
+      "mcp__zai-mcp-server__analyze_image"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "figma"
+  ]
+}

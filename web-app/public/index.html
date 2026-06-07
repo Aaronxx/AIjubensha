@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>AI推理叙事游戏</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root {
+  --bg1:#0A0E17; --bg2:#111827; --bg3:#1A1F2E; --bg4:#1E2433;
+  --bd:#2A3040; --gold:#C9A96E; --blue:#4A7DFF;
+  --t1:#E8ECF1; --t2:#8B95A5; --t3:#5A6475;
+  --red:#E0556A; --green:#4CAF93; --purple:#9B7ED8; --orange:#E8954C;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg1);color:var(--t1)}
+.phone{width:390px;height:844px;margin:20px auto;background:var(--bg1);border-radius:36px;overflow:hidden;border:3px solid #2a2a3a;display:flex;flex-direction:column}
+.header{padding:12px 16px;background:var(--bg2);display:flex;align-items:center;gap:12px}
+.btn-icon{background:none;border:none;color:var(--t1);font-size:20px;cursor:pointer}
+.chat-list{flex:1;overflow-y:auto;padding:12px}
+.msg-row{display:flex;gap:10px;margin-bottom:14px;align-items:flex-start}
+.msg-row.me{flex-direction:row-reverse}
+.avatar{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;flex-shrink:0}
+.msg-content{max-width:240px}
+.msg-name{font-size:11px;font-weight:600;margin-bottom:2px}
+.msg-bubble{padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.4}
+.msg-bubble.npc{background:var(--bg3)}
+.msg-bubble.me{background:var(--blue);color:#fff}.msg-time{font-size:9px;color:var(--t3);margin-top:2px}
+.input-bar{padding:12px 16px;background:var(--bg2);display:flex;gap:10px}
+.input-bar input{flex:1;padding:10px 16px;background:var(--bg4);border:none;border-radius:20px;color:var(--t1);font-size:13px;outline:none}
+.send-btn{width:40px;height:40px;border-radius:20px;background:var(--gold);border:none;color:var(--bg1);font-size:16px;font-weight:700;cursor:pointer}
+.tab-bar{display:flex;background:var(--bg2);border-top:1px solid var(--bd);padding:8px 16px 20px}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--t3);font-size:10px;cursor:pointer}
+.tab-btn.active{color:var(--gold)}
+.tab-btn span{font-size:22px}
+.screen{display:none;flex:1;overflow-y:auto}
+.screen.active{display:flex;flex-direction:column}
+
+/* Search */
+.search-loc{background:var(--bg2);border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid var(--bd)}
+.search-loc h3{font-size:15px;margin-bottom:8px}
+.search-loc p{font-size:10px;color:var(--t2);margin-bottom:10px}
+.target-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg3);border-radius:8px;margin-bottom:4px}
+.progress-bar{width:100px;height:4px;background:var(--bd);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px}
+.hint-box{padding:12px;background:var(--bg3);border-radius:10px;border:1px solid var(--gold)}
+
+/* Profile */
+.cover{height:140px;background:var(--bg2)}
+.avatar-lg{width:80px;height:80px;border-radius:40px;margin:-40px auto 0;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;font-weight:700}
+.stats-row{display:flex;gap:10px;padding:16px}
+.stat-card{flex:1;background:var(--bg2);border-radius:12px;padding:14px;text-align:center}
+.badge-row{display:flex;gap:8px;padding:0 16px;flex-wrap:wrap}
+.badge{background:var(--bg3);padding:6px 12px;border-radius:8px;font-size:11px;color:var(--gold);font-weight:600}
+.game-row{display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg2);border-radius:8px;margin:0 16px 6px}
+
+/* Shop */
+.shop-balance{padding:12px 16px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center}
+.shop-tabs{display:flex;gap:20px;padding:10px 16px}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+.shop-card{background:var(--bg2);border-radius:12px;overflow:hidden}
+.shop-prev{height:90px;display:flex;align-items:center;justify-content:center;font-size:32px;opacity:0.6}
+.shop-info{padding:10px}
+.shop-price{color:var(--gold);font-size:12px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+const H = "http://localhost:8000";
+
+// --- API ---
+async function api(path, opts) {
+  const r = await fetch(H+path, {...opts, headers:{"Content-Type":"application/json",...opts?.headers}});
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+// --- App ---
+function App() {
+  const [tab, setTab] = useState(0);
+  return (
+    <div className="phone">
+      {tab===0 && <ChatScreen/>}
+      {tab===1 && <SearchScreen/>}
+      {tab===2 && <ProfileScreen/>}
+      {tab===3 && <ShopScreen/>}
+      <div className="tab-bar">
+        {[["💬","聊天"],["🔍","搜证"],["👤","我的"],["🛒","商城"]].map(([i,l],k)=>(
+          <button key={k} className={`tab-btn ${tab===k?'active':''}`} onClick={()=>setTab(k)}>
+            <span>{i}</span>{l}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- Chat ---
+function ChatScreen() {
+  const [msgs, setMsgs] = useState([
+    {id:1,from:'苏晚晴',color:'#9B7ED8',text:'那晚我确实在画廊，不过很早就离开了。',time:'9:42'},
+    {id:2,from:'周明远',color:'#E8954C',text:'我是苏小姐的合伙人。陈先生是我老朋友，认识快十年。',time:'9:44'},
+    {id:3,from:'陈警官',color:'#4A7DFF',text:'各位，请配合调查。我需要知道晚宴后每人的行踪。',time:'9:46'},
+    {id:4,from:'苏晚晴',color:'#9B7ED8',text:'我昨晚约了陈先生谈画展...没想到那竟是最后一面。',time:'9:48'},
+  ]);
+  const [txt, setTxt] = useState('');
+  const listRef = useRef(null);
+
+  const send = async () => {
+    if(!txt.trim()) return;
+    setMsgs([...msgs, {id:Date.now(),from:'我',color:'#4A7DFF',text:txt,time:new Date().toLocaleTimeString('zh',{hour:'2-digit',minute:'2-digit'}),me:true}]);
+    try {
+      // In full version: POST to backend, get NPC reply
+    } catch(e) {}
+    setTxt('');
+  };
+
+  return (<>
+    <div className="header">
+      <button className="btn-icon">←</button>
+      <div><div style={{color:'#C9A96E',fontWeight:600,fontSize:15}}>第二幕 · 暗流涌动</div><div style={{fontSize:10,color:'#5A6475'}}>剩余 18:42</div></div>
+    </div>
+    <div className="chat-list" ref={listRef}>
+      {msgs.map(m=>(<div key={m.id} className={`msg-row ${m.me?'me':''}`}>
+        <div className="avatar" style={{background:m.color}}>{m.from[0]}</div>
+        <div className="msg-content">
+          <div className="msg-name" style={{color:m.color}}>{m.from}</div>
+          <div className={`msg-bubble ${m.me?'me':'npc'}`}>{m.text}</div>
+          <div className="msg-time">{m.time}</div>
+        </div>
+      </div>))}
+    </div>
+    <div className="input-bar">
+      <input value={txt} onChange={e=>setTxt(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="输入消息..."/>
+      <button className="send-btn" onClick={send}>↑</button>
+    </div>
+  </>);
+}
+
+// --- Search ---
+function SearchScreen() {
+  return (<>
+    <div className="header">
+      <button className="btn-icon">←</button>
+      <div><div style={{color:'#C9A96E',fontWeight:600,fontSize:15}}>第一轮搜证</div><div style={{fontSize:12,color:'#4A7DFF'}}>剩余 AP：7 / 15</div></div>
+    </div>
+    <div className="screen active" style={{padding:16}}>
+      <LocationCard icon="🚪" name="死者房间" sub="发现尸体的地点，关键证据所在" targets={[['尸体周围区域','2/2',100,'#4CAF93'],['个人物品','1/2',50,'#C9A96E'],['隐藏空间','0/2',0,'#C9A96E']]}/>
+      <LocationCard icon="🛋️" name="客厅公共区域" sub="晚宴举办地，多人经过" targets={[['沙发区','0/1',0,'#C9A96E'],['吧台/厨房','0/1',0,'#C9A96E']]}/>
+      <div className="hint-box"><span style={{color:'#C9A96E',fontSize:11}}>💡 NPC 苏晚晴提到死者日记本不见了</span><br/><span style={{fontSize:10,color:'#8B95A5'}}>→ 可以在 NPC 房间里寻找</span></div>
+    </div>
+  </>);
+}
+function LocationCard({icon,name,sub,targets}) {
+  return (<div className="search-loc">
+    <h3>{icon} {name}</h3><p>{sub}</p>
+    {targets.map(([n,ap,p,c],i)=>(<div key={i} className="target-row">
+      <div><div style={{fontSize:12}}>{n}</div><div style={{fontSize:10,color:'#C9A96E'}}>{ap} AP</div></div>
+      <div className="progress-bar"><div className="progress-fill" style={{width:p+'%',background:c}}></div></div>
+      <span style={{fontSize:10,color:'#5A6475'}}>{p}%</span>
+      {p>=100 ? <span style={{color:'#4CAF93',fontSize:14}}>✓</span> : <button style={{background:'rgba(201,169,110,0.15)',color:'#C9A96E',border:'none',borderRadius:6,padding:'4px 10px',fontSize:10,cursor:'pointer'}}>调查</button>}
+    </div>))}
+  </div>);
+}
+
+// --- Profile ---
+function ProfileScreen() {
+  return (<div className="screen active">
+    <div className="cover"></div>
+    <div className="avatar-lg" style={{background:'#9B7ED8'}}>王</div>
+    <div style={{textAlign:'center',padding:12}}>
+      <div style={{fontSize:20,fontWeight:600,marginBottom:4}}>推理小王 <span style={{background:'#C9A96E',color:'#0A0E17',fontSize:9,padding:'2px 10px',borderRadius:10}}>高级会员</span></div>
+      <div style={{fontSize:12,color:'#8B95A5'}}>"真相只有一个"</div>
+    </div>
+    <div className="stats-row">
+      {[['侦探投票率','78%','#4A7DFF'],['凶手逃脱率','33%','#E0556A'],['总场次','156','#C9A96E']].map(([l,v,c],i)=>(<div key={i} className="stat-card"><div style={{fontSize:24,fontWeight:600,color:c}}>{v}</div><div style={{fontSize:10,color:'#8B95A5',marginTop:4}}>{l}</div></div>))}
+    </div>
+    <div style={{padding:'0 16px',marginBottom:8,fontSize:14,fontWeight:600}}>成就徽章 · 4枚</div>
+    <div className="badge-row">{[['神探','#C9A96E'],['影帝','#C9A96E'],['铁证','#C9A96E'],['博览','#C9A96E']].map(([n,c],i)=>(<div key={i} className="badge">{n}</div>))}</div>
+    <div style={{padding:'0 16px',margin:'16px 0 8px',fontSize:14,fontWeight:600}}>最近战绩</div>
+    {[['✅ 山庄晚宴','侦探 · 投对'],['❌ 午夜列车','凶手 · 被投出'],['✅ 密室疑云','普通 · 投对']].map(([g,s],i)=>(<div key={i} className="game-row"><span style={{fontSize:13}}>{g}</span><span style={{fontSize:11,color:'#8B95A5'}}>{s}</span></div>))}
+  </div>);
+}
+
+// --- Shop ---
+function ShopScreen() {
+  const [bal] = useState(1280);
+  const [tab,setTab] = useState(0);
+  const items = [['暗夜主题',120,'HOT','#4A7DFF'],['水墨江南',200,'NEW','#9B7ED8'],['侦探徽章',60,'','#C9A96E'],['玫瑰气泡',80,'','#E0556A'],['金色真相',150,'限定','#C9A96E'],['复古画框',100,'','#8B95A5']];
+  return (<div className="screen active">
+    <div className="shop-balance">
+      <div style={{fontSize:20,fontWeight:'bold',color:'#C9A96E'}}>⭐ {bal}</div>
+      <button style={{padding:'6px 20px',background:'#C9A96E',border:'none',borderRadius:14,fontWeight:600,fontSize:12,cursor:'pointer'}}>充值</button>
+    </div>
+    <div className="shop-tabs">
+      {['推荐','皮肤','头像框','礼物','限定'].map((t,i)=>(<button key={i} onClick={()=>setTab(i)} style={{background:'none',border:'none',cursor:'pointer',color:tab===i?'#C9A96E':'#8B95A5',fontSize:13,fontWeight:tab===i?600:400,borderBottom:tab===i?'2px solid #C9A96E':'2px solid transparent',padding:'4px 0'}}>{t}</button>))}
+    </div>
+    <div className="shop-grid">
+      {items.map(([n,p,t,c],i)=>(<div key={i} className="shop-card">
+        <div className="shop-prev" style={{background:c+'33'}}>{t?<span style={{position:'absolute',top:6,right:6,background:'#E0556A',color:'#fff',fontSize:8,padding:'2px 6px',borderRadius:4}}>{t}</span>:null}</div>
+        <div className="shop-info"><div style={{fontSize:14,fontWeight:600,marginBottom:2}}>{n}</div><div className="shop-price">{p} 星</div></div>
+      </div>))}
+    </div>
+  </div>);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

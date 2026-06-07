@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>谜境 - 首页</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #06080D;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  .phone-frame {
+    width: 390px;
+    height: 844px;
+    background: #0A0E17;
+    border-radius: 36px;
+    border: 1px solid #1A2744;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 60px rgba(201,169,110,0.08);
+  }
+
+  /* Status Bar */
+  .status-bar {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: relative;
+    z-index: 10;
+  }
+  .status-bar .time { font-size: 15px; font-weight: 600; color: #E8ECF1; }
+  .status-bar .icons { display: flex; gap: 6px; align-items: center; }
+  .status-bar .icons span { font-size: 14px; color: #E8ECF1; }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 12px;
+  }
+  .header .title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #E8ECF1;
+    letter-spacing: -0.5px;
+  }
+  .header .notification {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #111827;
+    border: 1px solid #1A2744;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+  }
+  .header .notification .dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: #E0556A;
+    border-radius: 50%;
+    border: 2px solid #0A0E17;
+  }
+  .header .notification svg { width: 18px; height: 18px; stroke: #8B95A5; fill: none; stroke-width: 2; }
+
+  /* Scrollable Content */
+  .scroll-content {
+    height: calc(844px - 48px - 52px - 60px);
+    overflow-y: auto;
+    padding: 0 16px 80px;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* Banner Card */
+  .banner-card {
+    background: linear-gradient(135deg, #1A0F2E 0%, #0A0E17 100%);
+    border-radius: 12px;
+    border: 1px solid #1A2744;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .banner-card .tag {
+    display: inline-block;
+    font-size: 11px;
+    color: #C9A96E;
+    background: rgba(201,169,110,0.15);
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  .banner-card .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #C9A96E;
+    margin-bottom: 6px;
+  }
+  .banner-card .desc {
+    font-size: 13px;
+    color: #8B95A5;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .banner-card .bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .banner-card .cta-btn {
+    background: #C9A96E;
+    color: #0A0E17;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  .banner-card .countdown {
+    font-family: "JetBrains Mono", "SF Mono", monospace;
+    font-size: 12px;
+    color: #C9A96E;
+    background: rgba(201,169,110,0.1);
+    border: 1px solid rgba(201,169,110,0.3);
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .banner-card .dots {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+  .banner-card .dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1A2744;
+  }
+  .banner-card .dots span.active {
+    width: 16px;
+    border-radius: 3px;
+    background: #C9A96E;
+  }
+
+  /* Three Entry Cards */
+  .entry-cards {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .entry-card {
+    background: #111827;
+    border: 1px solid #1A2744;
+    border-radius: 12px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .entry-card:hover { border-color: rgba(201,169,110,0.4); }
+  .entry-card .icon { width: 28px; height: 28px; }
+  .entry-card .label { font-size: 13px; font-weight: 600; color: #E8ECF1; }
+  .entry-card .sub { font-size: 11px; color: #5A6475; }
+  .entry-card .badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    background: #E0556A;
+    border-radius: 50%;
+    font-size: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+  .entry-card .icon-wrap { position: relative; }
+
+  .entry-card.script .icon svg { stroke: #C9A96E; fill: none; stroke-width: 1.5; }
+  .entry-card.rank .icon svg { stroke: #4A7DFF; fill: none; stroke-width: 1.5; }
+  .entry-card.task .icon svg { stroke: #4CAF93; fill: none; stroke-width: 1.5; }
+
+  /* Beginner Guide Card */
+  .guide-card {
+    background: #111827;
+    border: 1px solid #1A2744;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .guide-card:hover { border-color: rgba(201,169,110,0.4); }
+  .guide-card .icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(155,126,216,0.3), rgba(155,126,216,0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .guide-card .icon-wrap svg { width: 20px; height: 20px; stroke: #9B7ED8; fill: none; stroke-width: 2; }
+  .guide-card .content { flex: 1; }
+  .guide-card .content .title { font-size: 14px; font-weight: 600; color: #E8ECF1; margin-bottom: 6px; }
+  .guide-card .progress-bar {
+    height: 4px;
+    background: #1A2744;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .guide-card .progress-bar .fill {
+    height: 100%;
+    width: 40%;
+    background: #9B7ED8;
+    border-radius: 2px;
+  }
+  .guide-card .arrow { color: #5A6475; font-size: 18px; }
+
+  /* Server Message Card */
+  .server-card {
+    background: #111827;
+    border: 1px solid #1A2744;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .server-card .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .server-card .label { font-size: 12px; color: #C9A96E; font-weight: 600; }
+  .server-card .post-btn {
+    font-size: 12px;
+    color: #C9A96E;
+    border: 1px solid rgba(201,169,110,0.4);
+    background: transparent;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .server-card .messages { display: flex; flex-direction: column; gap: 8px; }
+  .server-card .msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .server-card .msg .user-tag {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .server-card .msg .user-tag.blue { background: rgba(74,125,255,0.2); color: #4A7DFF; }
+  .server-card .msg .user-tag.pink { background: rgba(224,85,106,0.2); color: #E0556A; }
+  .server-card .msg .user-tag.green { background: rgba(76,175,147,0.2); color: #4CAF93; }
+  .server-card .msg .text { font-size: 12px; color: #8B95A5; }
+
+  /* Section Title */
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title h2 { font-size: 18px; font-weight: 700; color: #E8ECF1; }
+  .section-title .more { font-size: 12px; color: #C9A96E; cursor: pointer; }
+
+  /* Feed Cards */
+  .feed-card {
+    background: #111827;
+    border: 1px solid #1A2744;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .feed-card .user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .feed-card .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E0556A, #9B7ED8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .feed-card .user-info .name { font-size: 14px; font-weight: 600; color: #E8ECF1; }
+  .feed-card .user-info .tag {
+    display: inline-block;
+    font-size: 10px;
+    color: #E0556A;
+    background: rgba(224,85,106,0.15);
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+  }
+  .feed-card .user-info .time { font-size: 11px; color: #5A6475; margin-top: 2px; }
+  .feed-card .more-btn {
+    margin-left: auto;
+    color: #5A6475;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .feed-card .content-text {
+    font-size: 14px;
+    color: #E8ECF1;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .feed-card .content-text .spoiler { color: #5A6475; }
+  .feed-card .action-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #1A2744;
+  }
+  .feed-card .action-bar .action {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #5A6475;
+    cursor: pointer;
+  }
+  .feed-card .action-bar .action svg { width: 16px; height: 16px; stroke: #5A6475; fill: none; stroke-width: 2; }
+  .feed-card .action-bar .action.liked svg { stroke: #E0556A; fill: #E0556A; }
+  .feed-card .action-bar .action.liked { color: #E0556A; }
+
+  /* Bottom Tab Bar */
+  .bottom-tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #0A0E17;
+    border-top: 1px solid #1A2744;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 16px;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+  .tab-item svg { width: 22px; height: 22px; stroke: #5A6475; fill: none; stroke-width: 1.8; }
+  .tab-item span { font-size: 10px; color: #5A6475; }
+  .tab-item.active svg { stroke: #C9A96E; }
+  .tab-item.active span { color: #C9A96E; }
+  .tab-item.active::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 2px;
+    background: #C9A96E;
+    border-radius: 1px;
+  }
+
+  /* Center floating button */
+  .tab-center {
+    position: relative;
+    top: -10px;
+  }
+  .tab-center .circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C9A96E, #B8944F);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 10px 15px rgba(0,0,0,0.1);
+  }
+  .tab-center .circle svg { width: 26px; height: 26px; stroke: #0A0E17; fill: none; stroke-width: 2.5; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <span>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="#E8ECF1"><path d="M8 3.6c1.7 0 3.2.7 4.3 1.8l1.4-1.4C12.1 2.4 10.1 1.6 8 1.6S3.9 2.4 2.3 4l1.4 1.4C4.8 4.3 6.3 3.6 8 3.6zM8 7.2c.9 0 1.7.4 2.3 1l1.4-1.4C10.5 5.6 9.3 5.2 8 5.2S5.5 5.6 4.3 6.8l1.4 1.4c.6-.6 1.4-1 2.3-1zM8 10.8c.5 0 1-.2 1.3-.5.4-.4.5-.9.5-1.3s-.2-1-.5-1.3c-.4-.4-.9-.5-1.3-.5s-1 .2-1.3.5c-.4.4-.5.9-.5 1.3s.2 1 .5 1.3c.3.3.8.5 1.3.5z"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <span class="title">谜境</span>
+    <div class="notification">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="scroll-content">
+
+    <!-- Banner Card -->
+    <div class="banner-card">
+      <div class="tag">限时活动</div>
+      <div class="title">山庄晚宴</div>
+      <div class="desc">雨夜古堡，名流齐聚。一声枪响，谁是真凶？</div>
+      <div class="bottom-row">
+        <button class="cta-btn">立即参与</button>
+        <span class="countdown">02:14:33</span>
+      </div>
+      <div class="dots">
+        <span class="active"></span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Three Entry Cards -->
+    <div class="entry-cards">
+      <div class="entry-card script">
+        <div class="icon-wrap">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+        </div>
+        <span class="label">剧本</span>
+        <span class="sub">248+</span>
+      </div>
+      <div class="entry-card rank">
+        <div class="icon-wrap">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+          </div>
+        </div>
+        <span class="label">排行</span>
+      </div>
+      <div class="entry-card task">
+        <div class="icon-wrap">
+          <div class="badge">3</div>
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+        </div>
+        <span class="label">任务</span>
+      </div>
+    </div>
+
+    <!-- Beginner Guide Card -->
+    <div class="guide-card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="content">
+        <div class="title">新手指引</div>
+        <div class="progress-bar"><div class="fill"></div></div>
+      </div>
+      <span class="arrow">›</span>
+    </div>
+
+    <!-- Server Message Card -->
+    <div class="server-card">
+      <div class="top-row">
+        <span class="label">全服喊话</span>
+        <button class="post-btn">发表</button>
+      </div>
+      <div class="messages">
+        <div class="msg">
+          <span class="user-tag blue">推理小王</span>
+          <span class="text">山庄晚宴太烧脑了，凶手竟然是...</span>
+        </div>
+        <div class="msg">
+          <span class="user-tag pink">探案达人</span>
+          <span class="text">有人一起拼车吗？还差2人</span>
+        </div>
+        <div class="msg">
+          <span class="user-tag green">真相猎手</span>
+          <span class="text">新本《午夜列车》已通关！</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Title -->
+    <div class="section-title">
+      <h2>热门动态</h2>
+      <span class="more">查看全部</span>
+    </div>
+
+    <!-- Feed Card 1 -->
+    <div class="feed-card">
+      <div class="user-row">
+        <div class="avatar">苏</div>
+        <div class="user-info">
+          <span class="name">苏晚晴<span class="tag">侦探</span></span>
+          <div class="time">2 小时前</div>
+        </div>
+        <span class="more-btn">⋮</span>
+      </div>
+      <div class="content-text">
+        终于把山庄晚宴通关了，凶手居然是...剧透就不说了
+        <span class="spoiler">但是推理过程真的太精彩了！</span>
+      </div>
+      <div class="action-bar">
+        <div class="action liked">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span>128</span>
+        </div>
+        <div class="action">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>36</span>
+        </div>
+        <div class="action">
+          <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          <span>分享</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feed Card 2 -->
+    <div class="feed-card">
+      <div class="user-row">
+        <div class="avatar" style="background: linear-gradient(135deg, #4A7DFF, #4CAF93);">陈</div>
+        <div class="user-info">
+          <span class="name">陈警官<span class="tag" style="background:rgba(74,125,255,0.15);color:#4A7DFF;">金牌侦探</span></span>
+          <div class="time">5 小时前</div>
+        </div>
+        <span class="more-btn">⋮</span>
+      </div>
+      <div class="content-text">
+        今天当侦探居然投对了！第一次当侦探就成功，开心喵～
+      </div>
+      <div class="action-bar">
+        <div class="action">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span>85</span>
+        </div>
+        <div class="action">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>22</span>
+        </div>
+        <div class="action">
+          <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          <span>分享</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="bottom-tab-bar">
+    <div class="tab-item active">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>首页</span>
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>剧本</span>
+    </div>
+    <div class="tab-item tab-center">
+      <div class="circle">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>社交</span>
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>我的</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

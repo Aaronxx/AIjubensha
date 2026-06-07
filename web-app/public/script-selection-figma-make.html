@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>剧本选择页面 - Figma Make</title>
+<style>
+:root {
+  --bg1:#0A0E17; --bg2:#111827; --bg3:#1A1F2E;
+  --bd:#2A3040; --gold:#C9A96E; --goldLight:#DFC78A;
+  --t1:#E8ECF1; --t2:#8B95A5; --t3:#5A6475;
+  --blue:#4A7DFF; --purple:#9B7ED8; --green:#4CAF93;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg1);color:var(--t1);display:flex;justify-content:center;min-height:100vh;padding:20px}
+
+.phone{width:430px;min-height:1382px;background:var(--bg1);border-radius:24px;overflow:hidden;position:relative}
+
+/* Search Header */
+.search-area{padding:12px 16px;border-bottom:1px solid var(--bd)}
+.search-box{width:350px;height:36px;background:rgba(30,41,56,0.5);border-radius:18px;display:flex;align-items:center;padding:0 12px;position:relative}
+.search-icon{width:16px;height:16px;border:2px solid var(--t2);border-radius:50%;position:absolute;left:12px;top:10px}
+.search-icon::after{content:'';width:2px;height:5px;background:var(--t2);position:absolute;right:-5px;top:8px;transform:rotate(-45deg)}
+.search-input{width:100%;height:100%;background:transparent;border:none;color:var(--t1);font-size:14px;padding-left:40px;outline:none}
+.search-input::placeholder{color:var(--t3)}
+
+.filter-btn{width:36px;height:36px;background:rgba(30,41,56,0.5);border-radius:50%;position:absolute;right:0;top:0;display:flex;align-items:center;justify-content:center}
+.filter-btn::before{content:'...';color:var(--t2);font-size:14px;letter-spacing:2px}
+
+/* Content Area */
+.content{padding:12px;display:flex;flex-direction:column;gap:12px}
+
+/* Banner/Featured */
+.featured{height:52px;background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%);border-radius:10px;padding:16px;display:flex;align-items:center}
+.featured-text{font-size:14px;font-weight:600;color:var(--gold)}
+
+/* Horizontal Scroll Cards */
+.cards-scroll{height:68px;display:flex;gap:8px;overflow-x:auto}
+.cards-scroll::-webkit-scrollbar{display:none}
+.scroll-card{width:120px;height:60px;background:var(--bg3);border-radius:8px;flex-shrink:0}
+
+/* Section Title */
+.section-title{height:24px;font-size:14px;font-weight:600;color:var(--t1);margin-top:8px}
+
+/* Script List */
+.script-list{display:flex;flex-direction:column;gap:8px}
+
+.script-item{height:100px;background:var(--bg3);border-radius:10px;padding:12px;display:flex;gap:12px}
+.script-cover{width:76px;height:76px;background:var(--bg2);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.script-cover-text{font-size:24px}
+.script-info{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.script-name{font-size:15px;font-weight:600;color:var(--t1)}
+.script-tags{display:flex;gap:6px}
+.script-tag{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600}
+.script-tag.blue{background:rgba(74,125,255,0.3);color:var(--blue)}
+.script-tag.purple{background:rgba(155,126,216,0.3);color:var(--purple)}
+.script-tag.green{background:rgba(76,175,147,0.3);color:var(--green)}
+.script-meta{display:flex;align-items:center;gap:8px}
+.script-rating{color:var(--gold);font-size:12px}
+.script-players{color:var(--t3);font-size:11px}
+
+/* Bottom Tab Bar */
+.tab-bar{height:53px;background:rgba(16,23,40,0.95);border-top:1px solid var(--bd);display:flex;justify-content:space-around;align-items:center;padding:0 20px;position:absolute;bottom:0;left:0;right:0}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.tab-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.tab-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.tab-label{font-size:10px;color:var(--t3)}
+.tab-item.active .tab-label{color:var(--gold);font-weight:600}
+.tab-item.active .tab-icon svg{stroke:var(--gold)}
+
+.tab-item.active::before{content:'';position:absolute;top:-8px;width:20px;height:2px;background:var(--gold);border-radius:1px}
+
+/* Quick Button in middle */
+.quick-btn{position:relative;top:-12px}
+.quick-btn .tab-icon{width:32px;height:32px;background:linear-gradient(135deg,#F5A623,#E8943C);border-radius:16px;display:flex;align-items:center;justify-content:center}
+.quick-btn .tab-icon svg{stroke:none;fill:white}
+.quick-btn .tab-label{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- Search Header -->
+  <div class="search-area">
+    <div style="position:relative;width:350px">
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="搜索剧本...">
+      </div>
+      <div class="filter-btn"></div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Featured Banner -->
+    <div class="featured">
+      <span class="featured-text">🎯 热门推荐</span>
+    </div>
+
+    <!-- Horizontal Scroll Cards -->
+    <div class="cards-scroll">
+      <div class="scroll-card"></div>
+      <div class="scroll-card"></div>
+      <div class="scroll-card"></div>
+    </div>
+
+    <!-- Section: 分类推荐 -->
+    <div class="section-title">分类推荐</div>
+    <div class="script-list">
+      <div class="script-item">
+        <div class="script-cover">
+          <span class="script-cover-text">🎭</span>
+        </div>
+        <div class="script-info">
+          <div class="script-name">山庄晚宴</div>
+          <div class="script-tags">
+            <span class="script-tag blue">本格</span>
+          </div>
+          <div class="script-meta">
+            <span class="script-rating">⭐ 9.2</span>
+            <span class="script-players">1285人玩过</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="script-item">
+        <div class="script-cover">
+          <span class="script-cover-text">🎭</span>
+        </div>
+        <div class="script-info">
+          <div class="script-name">午夜列车</div>
+          <div class="script-tags">
+            <span class="script-tag purple">社交</span>
+          </div>
+          <div class="script-meta">
+            <span class="script-rating">⭐ 8.8</span>
+            <span class="script-players">892人玩过</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="script-item">
+        <div class="script-cover">
+          <span class="script-cover-text">🎭</span>
+        </div>
+        <div class="script-info">
+          <div class="script-name">古宅迷踪</div>
+          <div class="script-tags">
+            <span class="script-tag green">情感</span>
+          </div>
+          <div class="script-meta">
+            <span class="script-rating">⭐ 9.0</span>
+            <span class="script-players">654人玩过</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      </div>
+      <span class="tab-label">首页</span>
+    </div>
+
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <span class="tab-label">剧本</span>
+    </div>
+
+    <div class="tab-item quick-btn">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <span class="tab-label">快速</span>
+    </div>
+
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <span class="tab-label">广场</span>
+    </div>
+
+    <div class="tab-item">
+      <div class="tab-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

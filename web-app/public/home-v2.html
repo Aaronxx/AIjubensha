@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>AI推理叙事游戏 - 首页</title>
+<style>
+:root {
+  --bg1:#0A0E17; --bg2:#111827; --bg3:#1A1F2E; --bg4:#1E2433;
+  --bd:#2A3040; --gold:#C9A96E; --goldLight:#DFC78A;
+  --t1:#E8ECF1; --t2:#8B95A5; --t3:#5A6475;
+  --red:#E0556A; --green:#4CAF93; --purple:#9B7ED8; --orange:#E8954C;
+  --blue:#4A7DFF; --cyan:#5BAEC9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg1);color:var(--t1)}
+.phone{width:390px;height:844px;margin:20px auto;background:var(--bg1);border-radius:40px;overflow:hidden;border:2px solid #2a2a3a;position:relative}
+
+/* Status Bar */
+.status-bar{height:44px;padding:12px 32px;display:flex;justify-content:space-between;align-items:center}
+.battery{width:26px;height:12px;background:var(--t1);border-radius:3px;position:relative}
+.battery::after{content:'';width:2px;height:6px;background:var(--t1);position:absolute;right:-4px;top:3px;border-radius:1px}
+
+/* Banner Carousel */
+.banner-area{height:180px;padding:0 16px;margin-top:8px}
+.banner{height:180px;background:linear-gradient(135deg,#1A0F2E 0%,#120820 100%);border-radius:16px;border:1px solid var(--bd);position:relative;overflow:hidden}
+.banner-glow{width:120px;height:120px;background:var(--gold);opacity:0.08;border-radius:60px;position:absolute;right:-10px;top:-40px}
+.banner-glow2{width:80px;height:80px;background:var(--purple);opacity:0.1;border-radius:40px;position:absolute;left:-20px;bottom:20px}
+.hot-badge{position:absolute;top:16px;left:16px;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:11px}
+.banner-title{position:absolute;top:42px;left:16px;font-size:20px;font-weight:700;color:var(--gold)}
+.banner-sub{position:absolute;top:68px;left:16px;font-size:13px;color:var(--t2)}
+.event-time{position:absolute;top:92px;left:16px;background:rgba(201,169,110,0.18);color:var(--goldLight);font-size:11px;font-weight:600;padding:4px 10px;border-radius:11px}
+.cta-btn{position:absolute;top:130px;left:16px;width:110px;height:36px;background:var(--gold);border:1px solid rgba(223,199,138,0.4);border-radius:18px;display:flex;align-items:center;justify-content:center;color:var(--bg1);font-size:14px;font-weight:700}
+.carousel-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:20px;background:rgba(0,0,0,0.25);padding:4px 10px;border-radius:5px}
+.dot{width:6px;height:6px;border-radius:3px;background:var(--t3)}
+.dot.active{width:6px;height:6px;background:var(--gold)}
+
+/* Three Entries - smaller */
+.entries{display:flex;gap:10px;padding:0 16px;margin-top:10px}
+.entry{width:110px;height:70px;background:var(--bg3);border:1px solid var(--bd);border-radius:14px;display:flex;flex-direction:column;align-items:center;position:relative}
+.entry-icon-bg{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-top:6px}
+.entry-icon-bg.gold{background:rgba(201,169,110,0.15)}
+.entry-icon-bg.orange{background:rgba(232,149,76,0.15)}
+.entry-icon-bg.green{background:rgba(76,175,147,0.15)}
+.entry-icon{font-size:24px;width:28px;height:28px}
+.entry-label{font-size:13px;font-weight:600;margin-top:4px}
+.task-badge{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--red);border-radius:9px;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* Beginner Guide - 2.3x height */
+.beginner{height:83px;margin:12px 16px;background:linear-gradient(135deg,#2D1B3C 0%,#231528 50%,#1A0F22 100%);border-radius:16px;border:1.5px solid rgba(180,128,200,0.5);position:relative;overflow:hidden;display:flex;align-items:center}
+.beginner-decor{position:absolute;width:60px;height:60px;background:rgba(180,128,200,0.15);border-radius:30px;right:0;top:10px}
+.beginner-decor2{position:absolute;width:40px;height:40px;background:rgba(150,100,180,0.12);border-radius:20px;left:10px;bottom:-10px}
+.beginner-stars{position:absolute;top:8px;left:20px;font-size:14px;color:#E8D8F8;letter-spacing:70px}
+.beginner-content{padding-left:16px;flex:1}
+.beginner-title{font-size:18px;font-weight:700;color:#E8D8F8}
+.beginner-desc{font-size:14px;color:#B8A8C8;margin-top:4px}
+.beginner-progress{display:flex;align-items:center;margin-top:8px}
+.progress-bar{width:270px;height:12px;background:#453858;border-radius:6px;overflow:hidden}
+.progress-fill{width:85px;height:12px;background:#B880D0;border-radius:6px}
+.progress-text{font-size:10px;font-weight:600;color:#9A80B0;margin-left:8px}
+.beginner-arrow{width:40px;height:36px;background:rgba(180,128,200,0.35);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#E8D8F8;margin-right:12px}
+
+/* Danmu Area */
+.danmu-area{height:70px;margin:0 16px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:6px 12px;position:relative}
+.danmu-header{display:flex;align-items:center}
+.danmu-title{font-size:12px;font-weight:700;color:var(--gold)}
+.danmu-count{font-size:10px;color:var(--t3);margin-left:8px}
+.danmu-rows{margin-top:4px;height:45px;position:relative}
+.danmu-card{height:13px;border-radius:7px;background:var(--bg3);display:flex;align-items:center;padding:2px 8px;position:absolute;white-space:nowrap}
+.danmu-card.c1{left:180px;top:0;width:240px;border:1px solid rgba(74,125,255,0.3)}
+.danmu-card.c2{left:12px;top:15px;width:240px;border:1px solid rgba(155,126,216,0.3)}
+.danmu-card.c3{left:90px;top:30px;width:240px;border:1px solid rgba(76,175,147,0.3)}
+.danmu-user{font-size:8px;font-weight:700;padding:0 5px;border-radius:5px;height:9px;display:flex;align-items:center}
+.danmu-user.blue{background:rgba(74,125,255,0.35);color:var(--blue)}
+.danmu-user.purple{background:rgba(155,126,216,0.35);color:var(--purple)}
+.danmu-user.green{background:rgba(76,175,147,0.35);color:var(--green)}
+.danmu-text{font-size:9px;color:var(--t2);margin-left:4px}
+.danmu-pub{position:absolute;right:12px;bottom:4px;font-size:11px;font-weight:700;color:var(--gold)}
+
+/* Hot Feeds Header */
+.hot-header{display:flex;justify-content:space-between;padding:8px 16px 4px}
+.hot-title{font-size:17px;font-weight:700}
+.hot-more{font-size:12px;color:var(--t3)}
+
+/* Weibo-style Feed Cards */
+.feed-card{background:var(--bg3);border:0.5px solid rgba(42,48,64,0.4);border-radius:12px;margin:0 16px 8px;padding:14px}
+.feed-card.with-img{padding-bottom:16px}
+.feed-avatar{width:42px;height:42px;border-radius:21px;border:2px solid}
+.feed-avatar.blue{background:var(--blue);border-color:rgba(74,125,255,0.4)}
+.feed-avatar.purple{background:var(--purple);border-color:rgba(155,126,216,0.4)}
+.feed-avatar.orange{background:var(--orange);border-color:rgba(232,149,76,0.4)}
+.feed-avatar.green{background:var(--green);border-color:rgba(76,175,147,0.4)}
+.feed-avatar.red{background:var(--red);border-color:rgba(224,85,106,0.4)}
+.feed-avatar-text{font-size:16px;font-weight:700;color:#fff;text-align:center;line-height:42px}
+.feed-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.feed-name-tag{display:flex;align-items:center;gap:6px}
+.feed-name{font-size:14px;font-weight:700}
+.feed-tag{font-size:10px;font-weight:700;padding:2px 6px;border-radius:9px;display:inline-block}
+.feed-tag.blue{background:rgba(74,125,255,0.22);color:var(--blue)}
+.feed-tag.purple{background:rgba(155,126,216,0.22);color:var(--purple)}
+.feed-tag.orange{background:rgba(232,149,76,0.22);color:var(--orange)}
+.feed-tag.green{background:rgba(76,175,147,0.22);color:var(--green)}
+.feed-tag.red{background:rgba(224,85,106,0.22);color:var(--red)}
+.feed-content{font-size:13px;color:var(--t2);line-height:1.5;margin-top:2px}
+.feed-images{display:flex;gap:8px;margin-top:12px}
+.feed-img{width:145px;height:100px;background:var(--bg4);border:1px solid var(--bd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--t3)}
+.feed-actions{display:flex;gap:30px;margin-top:12px;font-size:12px;color:var(--t3)}
+.feed-time{font-size:10px;color:var(--t3)}
+
+/* Tab Bar */
+.tab-bar{height:70px;background:var(--bg2);border-top:1px solid rgba(42,48,64,0.4);position:absolute;bottom:0;left:0;right:0;display:flex;padding-bottom:14px}
+.tab-item{width:calc(390px / 5);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:12px;position:relative}
+.tab-icon{font-size:20px;color:var(--t3)}
+.tab-icon.active{color:var(--gold)}
+.tab-label{font-size:11px;color:var(--t3);margin-top:6px}
+.tab-label.active{color:var(--gold);font-weight:700}
+.active-line{width:36px;height:2px;background:var(--gold);border-radius:1px;position:absolute;top:0;left:50%;transform:translateX(-50%)}
+.quick-btn{width:78px;height:58px;background:linear-gradient(135deg,#F5A623 0%,#E8943C 50%,#D97706 100%);border:2px solid rgba(255,200,100,0.6);border-radius:29px;position:absolute;top:-20px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(245,166,35,0.35)}
+.quick-btn-text{font-family:'PingFang SC','Microsoft YaHei',sans-serif;font-size:15px;font-weight:700;color:#fff;line-height:1.2;text-shadow:0 1px 2px rgba(0,0,0,0.2);letter-spacing:1px}
+.quick-btn-text.t1{margin-top:2px}
+.quick-btn-sparkle{position:absolute;top:-4px;right:-4px;font-size:12px;color:#FFE4B5}
+
+/* Home Indicator */
+.home-indicator{width:134px;height:5px;background:rgba(90,100,117,0.3);border-radius:2.5px;position:absolute;bottom:10px;left:50%;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span style="font-size:15px;font-weight:700">9:41</span>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span style="font-size:12px">📶</span>
+      <div class="battery"></div>
+    </div>
+  </div>
+
+  <!-- Banner Carousel -->
+  <div class="banner-area">
+    <div class="banner">
+      <div class="banner-glow"></div>
+      <div class="banner-glow2"></div>
+      <div class="hot-badge">HOT</div>
+      <div class="banner-title">限时活动 · 山庄晚宴</div>
+      <div class="banner-sub">完成限时推理挑战，解锁限定头像框</div>
+      <div class="event-time">剩余 2天 18小时</div>
+      <div class="cta-btn">立即参与</div>
+      <div class="carousel-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three Entries -->
+  <div class="entries">
+    <div class="entry">
+      <div class="entry-icon-bg gold">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect x="2" y="4" width="28" height="24" rx="4" fill="#C9A96E"/>
+          <rect x="6" y="8" width="3" height="18" rx="1" fill="#0A0E17" opacity="0.5"/>
+          <rect x="12" y="10" width="16" height="3" rx="1" fill="#0A0E17" opacity="0.4"/>
+          <rect x="12" y="16" width="16" height="3" rx="1" fill="#0A0E17" opacity="0.4"/>
+          <rect x="12" y="22" width="12" height="3" rx="1" fill="#0A0E17" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="entry-label">剧本</div>
+    </div>
+    <div class="entry">
+      <div class="entry-icon-bg orange">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M8 6 L8 16 Q8 22 16 22 Q24 22 24 16 L24 6" stroke="#E8954C" stroke-width="3" fill="none" rx="4"/>
+          <ellipse cx="6" cy="10" rx="4" ry="5" stroke="#E8954C" stroke-width="2" fill="none"/>
+          <ellipse cx="26" cy="10" rx="4" ry="5" stroke="#E8954C" stroke-width="2" fill="none"/>
+          <rect x="12" y="22" width="8" height="3" rx="1" fill="#E8954C"/>
+          <rect x="10" y="25" width="12" height="5" rx="2" fill="#E8954C"/>
+        </svg>
+      </div>
+      <div class="entry-label">排行榜</div>
+    </div>
+    <div class="entry">
+      <div class="entry-icon-bg green">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="14" stroke="#4CAF93" stroke-width="2" fill="#4CAF93"/>
+          <circle cx="16" cy="16" r="7" fill="#0A0E17" opacity="0.3"/>
+          <circle cx="16" cy="16" r="3" fill="#4CAF93"/>
+        </svg>
+      </div>
+      <div class="entry-label">任务</div>
+      <div class="task-badge">3</div>
+    </div>
+  </div>
+
+  <!-- Beginner Guide -->
+  <div class="beginner">
+    <div class="beginner-decor"></div>
+    <div class="beginner-decor2"></div>
+    <div class="beginner-stars">✨···✨·✨</div>
+    <div class="beginner-content">
+      <div class="beginner-title">🌸 新手引导剧本</div>
+      <div class="beginner-desc">完成推理入门之旅，解锁侦探徽章</div>
+      <div class="beginner-progress">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <div class="progress-text">进度 32%</div>
+      </div>
+    </div>
+    <div class="beginner-arrow">→</div>
+  </div>
+
+  <!-- Danmu Area -->
+  <div class="danmu-area">
+    <div class="danmu-header">
+      <span class="danmu-title">📢 全服喊话</span>
+      <span class="danmu-count">128人在线</span>
+    </div>
+    <div class="danmu-rows">
+      <div class="danmu-card c1">
+        <div class="danmu-user blue">推理小王</div>
+        <span class="danmu-text">有人来玩山庄晚宴吗？等队友！</span>
+      </div>
+      <div class="danmu-card c2">
+        <div class="danmu-user purple">侦探迷</div>
+        <span class="danmu-text">刚通关午夜列车，核诡太绝了！</span>
+      </div>
+      <div class="danmu-card c3">
+        <div class="danmu-user green">夜猫子</div>
+        <span class="danmu-text">深夜求组局，速来大佬带飞～</span>
+      </div>
+    </div>
+    <span class="danmu-pub">发表喊话 +</span>
+  </div>
+
+  <!-- Hot Feeds -->
+  <div class="hot-header">
+    <span class="hot-title">🔥 热门动态</span>
+    <span class="hot-more">查看全部 ></span>
+  </div>
+
+  <div style="padding:0 16px;flex:1;overflow-y:auto;margin-top:4px">
+    <!-- Feed 1 - with images -->
+    <div class="feed-card with-img">
+      <div class="feed-header">
+        <div class="feed-avatar blue"><div class="feed-avatar-text">探</div></div>
+        <div class="feed-name-tag">
+          <span class="feed-name">探案达人</span>
+          <span class="feed-tag blue">攻略</span>
+          <span style="font-size:10px;color:var(--orange)">🔥</span>
+        </div>
+      </div>
+      <div class="feed-content">山庄晚宴全线索梳理+复盘，建议收藏！核诡解析超详细，新手必看～</div>
+      <div class="feed-images">
+        <div class="feed-img">🖼️</div>
+        <div class="feed-img">🖼️</div>
+      </div>
+      <div class="feed-actions">
+        <span>♡ 328</span>
+        <span>💬 56</span>
+        <span>↗ 分享</span>
+        <span class="feed-time">2小时前</span>
+      </div>
+    </div>
+
+    <!-- Feed 2 - with 1 image -->
+    <div class="feed-card with-img">
+      <div class="feed-header">
+        <div class="feed-avatar purple"><div class="feed-avatar-text">真</div></div>
+        <div class="feed-name-tag">
+          <span class="feed-name">真相只有一个</span>
+          <span class="feed-tag purple">动态</span>
+        </div>
+      </div>
+      <div class="feed-content">第一次当凶手就逃脱成功，开心！分享一下我的作案思路和误导技巧</div>
+      <div class="feed-images">
+        <div class="feed-img">🖼️</div>
+      </div>
+      <div class="feed-actions">
+        <span>♡ 256</span>
+        <span>💬 42</span>
+        <span>↗ 分享</span>
+        <span class="feed-time">3小时前</span>
+      </div>
+    </div>
+
+    <!-- Feed 3 - no image -->
+    <div class="feed-card">
+      <div class="feed-header">
+        <div class="feed-avatar orange"><div class="feed-avatar-text">推</div></div>
+        <div class="feed-name-tag">
+          <span class="feed-name">推理新手</span>
+          <span class="feed-tag orange">心得</span>
+        </div>
+      </div>
+      <div class="feed-content">新手引导剧本通关了，核诡真的很精妙，感谢大佬们的指点</div>
+      <div class="feed-actions">
+        <span>♡ 189</span>
+        <span>💬 28</span>
+        <span>↗ 分享</span>
+        <span class="feed-time">5小时前</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item">
+      <div class="active-line"></div>
+      <svg class="tab-icon active" width="24" height="24" viewBox="0 0 24 24" fill="#C9A96E">
+        <path d="M12 2 L2 10 L2 22 L22 22 L22 10 Z"/>
+        <rect x="8" y="14" width="8" height="8" rx="2" fill="#0A0E17"/>
+      </svg>
+      <span class="tab-label active">首页</span>
+    </div>
+    <div class="tab-item">
+      <svg class="tab-icon" width="24" height="24" viewBox="0 0 24 24" fill="#5A6475">
+        <rect x="2" y="2" width="20" height="16" rx="3"/>
+        <rect x="4" y="6" width="2" height="12" rx="1" fill="#0A0E17"/>
+      </svg>
+      <span class="tab-label">剧本</span>
+    </div>
+    <div class="tab-item" style="position:relative">
+      <div class="quick-btn">
+        <span class="quick-btn-sparkle">✨</span>
+        <span class="quick-btn-text t1">快速</span>
+        <span class="quick-btn-text">组局</span>
+      </div>
+    </div>
+    <div class="tab-item">
+      <svg class="tab-icon" width="24" height="24" viewBox="0 0 24 24" fill="#5A6475">
+        <rect x="2" y="6" width="14" height="10" rx="5"/>
+        <rect x="10" y="2" width="12" height="9" rx="4" fill="#5A6475" opacity="0.7"/>
+      </svg>
+      <span class="tab-label">社交</span>
+    </div>
+    <div class="tab-item">
+      <svg class="tab-icon" width="24" height="24" viewBox="0 0 24 24" fill="#5A6475">
+        <circle cx="12" cy="8" r="5"/>
+        <ellipse cx="12" cy="20" rx="8" ry="5"/>
+      </svg>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+
+  <div class="home-indicator"></div>
+</div>
+</body>
+</html>
