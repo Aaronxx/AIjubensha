@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "cc-figma-bridge": {
+      "command": "figma-mcp"
+    }
+  }
+}
