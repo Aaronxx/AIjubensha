@@ -1,37 +1,33 @@
-definitions:
-  environment:
-    ios_group: &ios_group
-      name: iOS Build
-      instance_type: mac_mini_m2
-      max_build_duration: 30
+workflows:
+  ios-build:
+    name: iOS Build
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
       xcode: latest
-
-scripts:
-  - name: Build iOS App
-    script: |
-      # Navigate to iOS client directory
-      cd ios-client
-
-      # List available schemes
-      xcodebuild -list
-
-      # Build for generic device (creates .app)
-      xcodebuild build \
-        -project AIjubensha.xcodeproj \
-        -scheme AIjubensha \
-        -configuration Release \
-        -destination generic/platform=iOS \
-        CODE_SIGN_IDENTITY="" \
-        CODE_SIGNING_REQUIRED=NO \
-        CODE_SIGNING_ALLOWED=NO
-
-artifacts:
-  - ios-client/build/**/*.app
-
-publishing:
-  email:
-    recipients:
-      - aaronxx@example.com
-    notify:
-      success: true
-      failure: true
+    scripts:
+      - name: Set up project
+        script: |
+          cd ios-client
+          ls -la
+      - name: Build iOS App
+        script: |
+          cd ios-client
+          xcodebuild -list || true
+          xcodebuild build \
+            -project AIjubensha.xcodeproj \
+            -scheme AIjubensha \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+    artifacts:
+      - ios-client/build/**/*.app
+    publishing:
+      email:
+        recipients:
+          - aaronxx@example.com
+        notify:
+          success: true
+          failure: true
