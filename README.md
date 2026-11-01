@@ -1,81 +1,98 @@
 # AIjubensha
 
-鍩轰簬澶ц瑷€妯″瀷鐨勫浜哄湪绾?AI 鍓ф湰鏉€锛圡urder Mystery Game锛夊钩鍙帮細鐢?AI 鎵紨鍓ф湰涓殑 NPC 瑙掕壊锛岀帺瀹跺湪鎴块棿鍐呰仈鏈鸿繘琛屽墽鎯呭璇濄€佹悳璇併€佹姇绁ㄤ笌缁撶畻銆?
-## 鍔熻兘鐗规€?
-- 馃幁 **AI NPC 寮曟搸**锛歀LM 椹卞姩鐨?NPC 瑙掕壊鎵紨锛屾敮鎸佷富/澶囨ā鍨嬭嚜鍔ㄥ垏鎹€侀噸璇曚笌瓒呮椂鎺у埗锛屽唴缃墽鏈牎楠屼笌 NPC 鐘舵€佺鐞?- 馃彔 **鎴块棿绯荤粺**锛氬垱寤?鍔犲叆鎴块棿锛學ebSocket 瀹炴椂鑱旀満
-- 馃摐 **鍓ф湰绠＄悊**锛氬墽鏈€佽鑹层€佸墽鎯呮帹杩涳紙dialogue / investigation / voting / settlement锛?- 馃攼 **鐢ㄦ埛绯荤粺**锛欽WT 璁よ瘉锛堟敞鍐?鐧诲綍锛?- 馃洅 **鍟嗗簵绯荤粺**锛氭父鎴忓唴閬撳叿/瑙掕壊鍟嗗簵
-- 馃洜 **绠＄悊鍚庡彴**锛氱嫭绔嬪悗鍙版湇鍔★紝鎻愪緵浠〃鐩樸€佸墽鏈笌瑙掕壊绠＄悊鎺ュ彛
+基于大语言模型的多人在线 AI 剧本杀（Murder Mystery Game）平台：由 AI 扮演剧本中的 NPC 角色，玩家在房间内联机进行剧情对话、搜证、投票与结算。
 
-## 椤圭洰缁撴瀯
+## 功能特性
+
+- 🎭 **AI NPC 引擎**：LLM 驱动的 NPC 角色扮演，支持主/备模型自动切换、重试与超时控制，内置剧本校验与 NPC 状态管理
+- 🏠 **房间系统**：创建/加入房间，WebSocket 实时联机
+- 📜 **剧本管理**：剧本、角色、剧情推进（dialogue / investigation / voting / settlement）
+- 🔐 **用户系统**：JWT 认证（注册/登录）
+- 🛒 **商店系统**：游戏内道具/角色商店
+- 🛠 **管理后台**：独立后台服务，提供仪表盘、剧本与角色管理接口
+
+## 项目结构
 
 ```
 AIjubensha/
-鈹溾攢鈹€ game-server/       # 鐜╁绔悗绔紙FastAPI + WebSocket + PostgreSQL + Redis锛?鈹溾攢鈹€ admin-server/      # 绠＄悊鍚庡彴鏈嶅姟锛團astAPI锛岀嫭绔嬬鍙ｏ級
-鈹溾攢鈹€ ai-npc-engine/     # AI NPC 寮曟搸锛圠LM 瀹㈡埛绔€丯PC 宸ュ巶銆佸墽鏈牎楠岋級
-鈹溾攢鈹€ flutter-client/    # Flutter 璺ㄥ钩鍙板鎴风锛圓ndroid / iOS / 妗岄潰 / Web锛?鈹溾攢鈹€ ios-client/        # 鍘熺敓 iOS 瀹㈡埛绔紙Xcode 宸ョ▼锛?鈹溾攢鈹€ web-app/           # Web 椤甸潰鍘熷瀷
-鈹溾攢鈹€ docker-compose.yml # 鏈湴鍩虹璁炬柦锛圥ostgreSQL 16 + Redis 7 + game-server锛?鈹斺攢鈹€ codemagic.yaml     # iOS 鏋勫缓娴佹按绾匡紙Codemagic CI锛?```
+├── game-server/       # 玩家端后端（FastAPI + WebSocket + PostgreSQL + Redis）
+├── admin-server/      # 管理后台服务（FastAPI，独立端口）
+├── ai-npc-engine/     # AI NPC 引擎（LLM 客户端、NPC 工厂、剧本校验）
+├── flutter-client/    # Flutter 跨平台客户端（Android / iOS / 桌面 / Web）
+├── ios-client/        # 原生 iOS 客户端（Xcode 工程）
+├── web-app/           # Web 页面原型
+├── docker-compose.yml # 本地基础设施（PostgreSQL 16 + Redis 7 + game-server）
+└── codemagic.yaml     # iOS 构建流水线（Codemagic CI）
+```
 
-## 鎶€鏈爤
+## 技术栈
 
-| 灞?| 鎶€鏈?|
+| 层 | 技术 |
 |---|---|
-| 鍚庣 | Python 路 FastAPI 路 SQLAlchemy 2 (asyncpg) 路 WebSockets |
-| 鏁版嵁 | PostgreSQL 16 路 Redis 7 |
-| 璁よ瘉 | JWT锛坧ython-jose + passlib锛?|
-| AI | DeepSeek API锛坄deepseek-chat`锛屾敮鎸佽嚜瀹氫箟 fallback 妯″瀷锛?|
-| 瀹㈡埛绔?| Flutter锛坧rovider 鐘舵€佺鐞嗭級路 Swift / Xcode |
-| 鍩虹璁炬柦 | Docker Compose 路 Codemagic CI |
+| 后端 | Python · FastAPI · SQLAlchemy 2 (asyncpg) · WebSockets |
+| 数据 | PostgreSQL 16 · Redis 7 |
+| 认证 | JWT（python-jose + passlib） |
+| AI | DeepSeek API（`deepseek-chat`，支持自定义 fallback 模型） |
+| 客户端 | Flutter（provider 状态管理）· Swift / Xcode |
+| 基础设施 | Docker Compose · Codemagic CI |
 
-## 蹇€熷紑濮?
-### 鍓嶇疆瑕佹眰
+## 快速开始
+
+### 前置要求
 
 - Python 3.10+
-- Docker & Docker Compose锛堟垨鑷 PostgreSQL / Redis锛?- Flutter SDK锛堣繍琛屽鎴风锛?- [DeepSeek API Key](https://platform.deepseek.com/)
+- Docker & Docker Compose（或自备 PostgreSQL / Redis）
+- Flutter SDK（运行客户端）
+- [DeepSeek API Key](https://platform.deepseek.com/)
 
-### 1. 鍚姩鍩虹璁炬柦
+### 1. 启动基础设施
 
 ```bash
 docker compose up -d postgres redis
 ```
 
-### 2. 閰嶇疆鐜鍙橀噺
+### 2. 配置环境变量
 
 ```bash
 cp game-server/.env.example game-server/.env
-# 缂栬緫 .env锛屽～鍏?DEEPSEEK_API_KEY
+# 编辑 .env，填入 DEEPSEEK_API_KEY
 ```
 
-### 3. 鍚姩鐜╁绔悗绔紙绔彛 8000锛?
+### 3. 启动玩家端后端（端口 8000）
+
 ```bash
 cd game-server
 pip install -r requirements.txt
 uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
-# API 鏂囨。锛歨ttp://localhost:8000/docs
+# API 文档：http://localhost:8000/docs
 ```
 
-### 4. 鍚姩绠＄悊鍚庡彴锛堢鍙?8001锛?
+### 4. 启动管理后台（端口 8001）
+
 ```bash
 cd admin-server
 pip install -r requirements.txt
 uvicorn src.main:app --host 0.0.0.0 --port 8001 --reload
-# 鍚庡彴 API 鏂囨。锛歨ttp://localhost:8001/docs
+# 后台 API 文档：http://localhost:8001/docs
 ```
 
-### 5. 杩愯 Flutter 瀹㈡埛绔?
+### 5. 运行 Flutter 客户端
+
 ```bash
 cd flutter-client
 flutter pub get
 flutter run
 ```
 
-涔熷彲浠ョ敤 Docker Compose 涓€閿惎鍔ㄥ畬鏁村悗绔細
+也可以用 Docker Compose 一键启动完整后端：
 
 ```bash
-cp .env.example .env   # 濉叆 DEEPSEEK_API_KEY
+cp .env.example .env   # 填入 DEEPSEEK_API_KEY
 docker compose up --build
 ```
 
-## 寮€鍙?
+## 开发
+
 ```bash
 cd game-server
 pip install -r requirements.txt
